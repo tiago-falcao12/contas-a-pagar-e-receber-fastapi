@@ -5,7 +5,7 @@ version = '0.0.1'
 description = 'Projeto simples utilizando o Fastapi para contruir APIS Rest'
 author = 'Tiago Nunes da Silva'
 author_email = 'tiagofalcaoshow12@gmail.com'
-url = 'https://github.com/seu-usuario/nome-do-projeto'
+url = 'https://github.com/tiago-falcao12/contas-a-pagar-e-receber-fastapi.git'
 license = 'MIT'
 
 # Leitura do README para usar como descrição longa
