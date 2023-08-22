@@ -16,7 +16,8 @@ license = 'MIT'
 dependencies = [
     'fastapi==0.79.0',
     'requests>=2.0',
-    'uvicorn==0.14.0'
+    'uvicorn==0.14.0',
+    'python-decouple==3.8'
 ]
 
 setup(
