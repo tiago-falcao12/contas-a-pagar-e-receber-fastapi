@@ -17,7 +17,10 @@ dependencies = [
     'fastapi==0.79.0',
     'requests>=2.0',
     'uvicorn==0.14.0',
-    'python-decouple==3.8'
+    'python-decouple==3.8',
+    'psycopg2==2.7.7',
+    'loguru==0.5.3',
+    'SQLAlchemy==1.4.49'
 ]
 
 setup(

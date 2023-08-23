@@ -1,7 +1,8 @@
 from decouple import config
 
 
-POSTGRES_DB: str = config('POSTGRES_DB')
-PORT_DB: int = config('PORT_DB')
-POSTGRES_USER: str = config('POSTGRES_USER')
-POSTGRES_PASSWORD: str = config('POSTGRES_PASSWORD')
+POSTGRES_DB = config('POSTGRES_DB')
+POSTGRES_PORT = config('POSTGRES_PORT')
+POSTGRES_HOST = config('POSTGRES_HOST')
+POSTGRES_USER = config('POSTGRES_USER')
+POSTGRES_PASSWORD = config('POSTGRES_PASSWORD')
