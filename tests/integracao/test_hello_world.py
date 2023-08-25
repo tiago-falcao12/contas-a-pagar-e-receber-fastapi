@@ -1,9 +1,10 @@
 from fastapi.testclient import TestClient
-from contas_a_pagar_e_receber import app
+
 from contas_a_pagar_e_receber.modulos.hello import hello_world
+from tests.client_test import get_client_test
 
 
-client = TestClient(app)
+client = get_client_test()
 
 
 def test_hello_deve_retornar_200_e_mensagem():

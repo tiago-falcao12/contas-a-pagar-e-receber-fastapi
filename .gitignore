@@ -150,6 +150,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+pytest.ini
+
 # pytype static type analyzer
 .pytype/
 

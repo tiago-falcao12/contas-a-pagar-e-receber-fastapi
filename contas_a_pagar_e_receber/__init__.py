@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 
-from contas_a_pagar_e_receber.rotas import hello
-from contas_a_pagar_e_receber.servicos.database import Base, engine
-from contas_a_pagar_e_receber.modelos.contas import ContaPagarReceber
+from contas_a_pagar_e_receber.rotas import hello, contas
+
+# from contas_a_pagar_e_receber.servicos.database import Base, engine
+# from contas_a_pagar_e_receber.modelos_db.contas import ContaPagarReceber
 
 
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+# Base.metadata.drop_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Contas a Pagar e Receber",
               description="Um projeto simples com o uso do FastAPI",
@@ -14,3 +15,4 @@ app = FastAPI(title="Contas a Pagar e Receber",
 
 
 app.include_router(hello.rota, prefix="/api", tags=["HELLO"])
+app.include_router(contas.rota, prefix="/api", tags=["CONTAS"])

@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from loguru import logger
 
 from contas_a_pagar_e_receber.config import (POSTGRES_DB,
                                              POSTGRES_HOST,
@@ -19,6 +20,9 @@ Base = declarative_base()
 def get_db():
     try:
         db = SessionLocal()
-        yield db
+        logger.info("[+] CONECTOU SESSÃO DATABASE")
+
+        return db
     finally:
+        logger.info("[+] SESSÃO DATABASE FINALIZADA")
         db.close()

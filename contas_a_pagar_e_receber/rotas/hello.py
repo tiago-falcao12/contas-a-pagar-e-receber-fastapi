@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from contas_a_pagar_e_receber.modulos.hello import hello_world
-from contas_a_pagar_e_receber.modelos.hello import HelloResponse
+from contas_a_pagar_e_receber.modelos_db.hello import HelloResponse
 
 rota = APIRouter()
 

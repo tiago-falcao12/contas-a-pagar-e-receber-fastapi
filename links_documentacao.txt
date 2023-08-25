@@ -1,0 +1,11 @@
+# ALEMBIC DOCUMENTAÇÃO
+https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment
+
+# ALEMBIC AUTO-GENERATE
+https://alembic.sqlalchemy.org/en/latest/autogenerate.html
+
+# COMANDOS ALEMBIC
+ININIALIZAR ALEMBIC: alembic init alembic
+MIGRAR: alembic revision --autogenerate -m "Cria tabela de contas a pagar e receber"
+ATUALIZAR VERSAO TABELA/DB: alembic upgrade head
+VOLTAR VERSAO: alembic downgrade -1

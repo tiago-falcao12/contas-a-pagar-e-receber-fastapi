@@ -20,7 +20,8 @@ dependencies = [
     'python-decouple==3.8',
     'psycopg2==2.7.7',
     'loguru==0.5.3',
-    'SQLAlchemy==1.4.49'
+    'SQLAlchemy==1.4.49',
+    'alembic==1.7.7'
 ]
 
 setup(
