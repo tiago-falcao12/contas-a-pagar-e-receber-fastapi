@@ -152,6 +152,8 @@ dmypy.json
 
 pytest.ini
 
+teste_db.db
+
 # pytype static type analyzer
 .pytype/
 
