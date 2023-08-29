@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
 from contas_a_pagar_e_receber.rotas import hello, contas
+from contas_a_pagar_e_receber.schemas.exceptions import NotFound
+from contas_a_pagar_e_receber.modulos.exceptions import not_found_exception_handler
 
 # from contas_a_pagar_e_receber.servicos.database import Base, engine
 # from contas_a_pagar_e_receber.modelos_db.contas import ContaPagarReceber
@@ -13,6 +15,8 @@ app = FastAPI(title="Contas a Pagar e Receber",
               description="Um projeto simples com o uso do FastAPI",
               version="0.0.1")
 
+
+app.add_exception_handler(NotFound, not_found_exception_handler)
 
 app.include_router(hello.rota, prefix="/api", tags=["HELLO"])
 app.include_router(contas.rota, prefix="/api", tags=["CONTAS"])

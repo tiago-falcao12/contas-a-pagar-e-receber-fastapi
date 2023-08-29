@@ -1,5 +1,6 @@
 from loguru import logger
 from sqlalchemy.orm import Session
+from contas_a_pagar_e_receber.modulos.exceptions import NotFound
 
 from contas_a_pagar_e_receber.modelos_db.contas import ContaPagarReceber
 
@@ -24,14 +25,13 @@ def capturar_contas_a_pagar_e_receber(db: Session):
 
 
 def capturar_conta_a_pagar_e_receber(id: int, db: Session):
-    conta = db.query(ContaPagarReceber).get(id)
-    db.commit()
-    db.refresh(conta)
+    conta = verificar_conta_por_id(id, db)
     return conta
 
 
 def atualizar_contas_a_receber_e_pagar(conta: dict(), id: int, db: Session):
-    conta_pagar_e_receber = db.query(ContaPagarReceber).get(id)
+    conta_pagar_e_receber = verificar_conta_por_id(id, db)
+
     conta_pagar_e_receber.descricao = conta.get('descricao')
     conta_pagar_e_receber.tipo = conta.get('tipo')
     conta_pagar_e_receber.valor = conta.get('valor')
@@ -43,6 +43,14 @@ def atualizar_contas_a_receber_e_pagar(conta: dict(), id: int, db: Session):
 
 
 def remover_contas_a_pagar_e_receber(id: int, db: Session):
-    conta = db.query(ContaPagarReceber).get(id)
+    conta = verificar_conta_por_id(id, db)
+
     db.delete(conta)
     db.commit()
+
+
+def verificar_conta_por_id(id: int, db: Session):
+    conta = db.query(ContaPagarReceber).get(id)
+    if conta is None:
+        raise NotFound(name="Conta")
+    return conta

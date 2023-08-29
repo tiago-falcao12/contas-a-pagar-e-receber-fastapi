@@ -103,3 +103,29 @@ def test_delete_conta_a_pagar_e_receber():
     response_del = client_account.delete(f'/api/remover_contas/{id}')
 
     assert response_del.status_code == 204
+
+
+def test_capturar_contas_a_pagar_e_receber_404():
+    create_db_test()
+
+    response = client_account.get('/api/contas/3')
+    assert response.status_code == 404
+
+
+def test_atualizar_contas_a_pagar_e_receber_404():
+    create_db_test()
+    conta_atualizar = {
+        "descricao": "Academia",
+        "valor": 100,
+        "tipo": "PAGAR"
+    }
+    response = client_account.put(
+        '/api/atualizar_contas/3', json=conta_atualizar)
+    assert response.status_code == 404
+
+
+def test_remover_contas_a_pagar_e_receber_404():
+    create_db_test()
+
+    response = client_account.delete('/api/remover_contas/3')
+    assert response.status_code == 404
