@@ -1,4 +1,5 @@
 from contas_a_pagar_e_receber.modelos_db.contas import ContaPagarReceber
+from contas_a_pagar_e_receber.modelos_db.fornecedor_cliente import ForncedorCliente
 from contas_a_pagar_e_receber.servicos.database import Base
 from logging.config import fileConfig
 

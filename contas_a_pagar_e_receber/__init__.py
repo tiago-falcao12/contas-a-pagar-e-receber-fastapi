@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from contas_a_pagar_e_receber.rotas import hello, contas
+from contas_a_pagar_e_receber.rotas import hello, contas, fornecedor_cliente
 from contas_a_pagar_e_receber.schemas.exceptions import NotFound
 from contas_a_pagar_e_receber.modulos.exceptions import not_found_exception_handler
 
@@ -20,3 +20,4 @@ app.add_exception_handler(NotFound, not_found_exception_handler)
 
 app.include_router(hello.rota, prefix="/api", tags=["HELLO"])
 app.include_router(contas.rota, prefix="/api", tags=["CONTAS"])
+app.include_router(fornecedor_cliente.rota, prefix="/api", tags=["FORNECEDORES"])
