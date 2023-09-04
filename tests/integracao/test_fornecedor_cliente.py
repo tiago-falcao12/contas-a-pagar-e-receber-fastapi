@@ -44,9 +44,9 @@ def test_capturar_contas_para_um_fornecedor_200():
     client.post('/api/inserir_contas', json=conta)
 
     response = client.get(f'/api/contas_fornecedor_cliente/{id_fornecedor}')
-    
+
     assert response.status_code == 200
-    assert response.json()[0]['descricao'] == "Academia"
+    assert response.json()[0]['fornecedor']["nome"] == "NeoEnergia"
 
 
 
