@@ -13,29 +13,42 @@ def test_get_contas_a_pagar_e_receber_200():
     assert response.json() == []
 
 
-def test_get_id_conta_a_pagar_e_receber_200():
+def test_get_id_conta_a_pagar_e_receber_com_id_fornecedor_cliente_200():
     create_db_test()
+
+    client_account.post('/api/inserir_fornecedor_cliente',
+                        json={"nome": "BASA"})
 
     conta = {
         "descricao": "Academia",
         "valor": 110,
-        "tipo": "PAGAR"
+        "tipo": "PAGAR",
+        "fornecedor_cliente_id": 1
     }
+
+    id_fornecedor = conta.get('fornecedor_cliente_id')
+
+    response_fornecedor = client_account.get(
+        f'/api/fornecedor_cliente/{id_fornecedor}')
 
     response = client_account.post('/api/inserir_contas', json=conta)
 
     id = response.json()['id']
 
     conta['id'] = id
+    del conta['fornecedor_cliente_id']
+
+    conta.update({"fornecedor": response_fornecedor.json()})
 
     response_get = client_account.get(f'/api/contas/{id}')
+
     assert response_get.status_code == 200
     assert response_get.json() == conta
 
 
 def test_contas_a_pagar_e_receber_422():
     json = {
-        "descricao": "123456789123456789123456789123456789123456789123456789123456789",
+        "descricao": "123456789" * 5,
         "valor": 0,
         "tipo": "PAGAR"
     }
@@ -44,7 +57,38 @@ def test_contas_a_pagar_e_receber_422():
     assert response.status_code == 422
 
 
-def test_insert_conta_a_pagar_e_receber_201():
+def test_insert_conta_a_pagar_e_receber_com_id_cliente_fornecedor_201():
+    create_db_test()
+
+    client_account.post('/api/inserir_fornecedor_cliente',
+                        json={"nome": "BASA"})
+
+    conta = {
+        "descricao": "Academia",
+        "valor": 110,
+        "tipo": "PAGAR",
+        "fornecedor_cliente_id": 1
+    }
+
+    id_fornecedor = conta.get('fornecedor_cliente_id')
+
+    response_fornecedor = client_account.get(
+        f'/api/fornecedor_cliente/{id_fornecedor}')
+
+    response = client_account.post('/api/inserir_contas', json=conta)
+
+    id = response.json()['id']
+
+    conta['id'] = id
+    del conta['fornecedor_cliente_id']
+
+    conta.update({"fornecedor": response_fornecedor.json()})
+
+    assert response.status_code == 201
+    assert response.json() == conta
+
+
+def test_insert_conta_a_pagar_e_redeber_sem_id_cliente_fornecedor_201():
     create_db_test()
 
     conta = {
@@ -56,9 +100,24 @@ def test_insert_conta_a_pagar_e_receber_201():
     response = client_account.post('/api/inserir_contas', json=conta)
 
     conta["id"] = 1
-
+    conta['fornecedor'] = None
     assert response.status_code == 201
     assert response.json() == conta
+
+
+def test_insert_conta_a_pagar_e_receber_com_id_fornecedor_cliente_inexistente_erro_404():
+    create_db_test()
+
+    conta = {
+        "descricao": "Academia",
+        "valor": 110,
+        "tipo": "PAGAR",
+        "fornecedor_cliente_id": 1
+    }
+
+    response = client_account.post('/api/inserir_contas', json=conta)
+
+    assert response.status_code == 404
 
 
 def test_update_conta_a_pagar_e_receber():
@@ -85,6 +144,37 @@ def test_update_conta_a_pagar_e_receber():
 
     assert response_put.status_code == 200
     assert response_put.json()['valor'] == 100
+
+
+def test_update_conta_a_pagar_e_receber_fornecedor_cliente_id():
+    create_db_test()
+
+    client_account.post('/api/inserir_fornecedor_cliente',
+                        json={"nome": "BASA"})
+
+    conta_inserir = {
+        "descricao": "Academia",
+        "valor": 110,
+        "tipo": "PAGAR"
+    }
+
+    response = client_account.post('/api/inserir_contas', json=conta_inserir)
+
+    id = response.json()['id']
+
+    conta_atualizar = {
+        "descricao": "Academia",
+        "valor": 100,
+        "tipo": "PAGAR",
+        "fornecedor_cliente_id": 1
+    }
+
+    response_put = client_account.put(
+        f'/api/atualizar_contas/{id}', json=conta_atualizar)
+
+    assert response_put.status_code == 200
+    assert response_put.json()['valor'] == 100
+    assert response_put.json()['fornecedor']['nome'] == "BASA"
 
 
 def test_delete_conta_a_pagar_e_receber():

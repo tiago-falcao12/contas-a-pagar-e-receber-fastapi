@@ -28,6 +28,28 @@ def test_capturar_fornecedor_cliente_por_id_200():
     assert response_get_id.json() == json_fornecedor
 
 
+def test_capturar_contas_para_um_fornecedor_200():
+    create_db_test()
+
+    conta = {
+        "descricao": "Academia",
+        "valor": 100,
+        "tipo": "PAGAR",
+        "fornecedor_cliente_id": 1
+    }
+
+    id_fornecedor = 1
+
+    client.post('/api/inserir_fornecedor_cliente', json={"nome": "NeoEnergia"})
+    client.post('/api/inserir_contas', json=conta)
+
+    response = client.get(f'/api/contas_fornecedor_cliente/{id_fornecedor}')
+    
+    assert response.status_code == 200
+    assert response.json()[0]['descricao'] == "Academia"
+
+
+
 def test_criar_fornecedor_cliente_200():
     create_db_test()
 
@@ -38,6 +60,7 @@ def test_criar_fornecedor_cliente_200():
 
     assert response.status_code == 201
     assert response.json()['nome'] == nome
+
 
 def test_atualizar_fornecedor_cliente_200():
     create_db_test()

@@ -22,7 +22,7 @@ def get_db():
         db = SessionLocal()
         logger.info("[+] CONECTOU SESSÃO DATABASE")
 
-        return db
+        yield db
     finally:
         logger.info("[+] SESSÃO DATABASE FINALIZADA")
         db.close()
