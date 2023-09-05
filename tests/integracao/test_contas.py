@@ -39,6 +39,9 @@ def test_get_id_conta_a_pagar_e_receber_com_id_fornecedor_cliente_200():
     del conta['fornecedor_cliente_id']
 
     conta.update({"fornecedor": response_fornecedor.json()})
+    conta['valor_baixa'] = None
+    conta['data_baixa'] = None
+    conta['baixado'] = False
 
     response_get = client_account.get(f'/api/contas/{id}')
 
@@ -83,6 +86,9 @@ def test_insert_conta_a_pagar_e_receber_com_id_cliente_fornecedor_201():
     del conta['fornecedor_cliente_id']
 
     conta.update({"fornecedor": response_fornecedor.json()})
+    conta['valor_baixa'] = None
+    conta['data_baixa'] = None
+    conta['baixado'] = False
 
     assert response.status_code == 201
     assert response.json() == conta
@@ -101,6 +107,10 @@ def test_insert_conta_a_pagar_e_redeber_sem_id_cliente_fornecedor_201():
 
     conta["id"] = 1
     conta['fornecedor'] = None
+    conta['valor_baixa'] = None
+    conta['data_baixa'] = None
+    conta['baixado'] = False
+
     assert response.status_code == 201
     assert response.json() == conta
 
@@ -118,6 +128,50 @@ def test_insert_conta_a_pagar_e_receber_com_id_fornecedor_cliente_inexistente_er
     response = client_account.post('/api/inserir_contas', json=conta)
 
     assert response.status_code == 404
+
+def test_baixar_contas_a_pagar_receber_201():
+    create_db_test()
+
+    conta_inserir = {
+        "descricao": "Academia",
+        "valor": 110,
+        "tipo": "PAGAR"
+        }
+
+    client_account.post('/api/inserir_contas', json=conta_inserir)
+
+    response = client_account.post("/api/baixar_contas/1")
+
+    assert response.status_code == 201
+    assert response.json()['baixado'] is True
+    assert response.json()['valor_baixa'] == conta_inserir['valor']
+
+def test_baixar_contas_a_pagar_e_receber_com_valor_alterado():
+    create_db_test()
+    conta_inserir = {
+        "descricao": "Academia",
+        "valor": 110,
+        "tipo": "PAGAR"
+        }
+
+    client_account.post('/api/inserir_contas', json=conta_inserir)
+    client_account.post("/api/baixar_contas/1")
+
+    conta_atualizar = {
+        "descricao": "Academia",
+        "valor": 200,
+        "tipo": "PAGAR"
+    }
+
+    client_account.put('/api/atualizar_contas/1', json=conta_atualizar)
+    response = client_account.post("/api/baixar_contas/1")
+
+    assert response.status_code == 201
+    assert response.json()['valor_baixa'] == 200
+    assert response.json()['baixado'] is True
+
+
+
 
 
 def test_update_conta_a_pagar_e_receber():

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from loguru import logger
 from sqlalchemy.orm import Session
 from contas_a_pagar_e_receber.modulos.exceptions import NotFound
@@ -16,6 +18,20 @@ def inserir_contas_a_pagar_e_receber(conta: dict, db: Session) -> dict:
     logger.info(
         f"[+] FINALIZOU INSERIR CONTAS - SAÍDA: {conta_pagar_e_receber.__dict__}")
     return conta_pagar_e_receber
+
+
+def baixar_contas_a_pagar_e_receber(id: int, db: Session):
+    conta = verificar_conta_por_id(id, db)
+
+    if (conta.baixado and conta.valor_baixa != conta.valor) or not conta.baixado:
+
+        conta.data_baixa = datetime.now()
+        conta.valor_baixa = conta.valor
+        conta.baixado = True        
+        db.add(conta)
+        db.commit()
+        db.refresh(conta)       
+    return conta
 
 
 def capturar_contas_a_pagar_e_receber(db: Session):
