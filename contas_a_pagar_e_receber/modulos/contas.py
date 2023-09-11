@@ -2,8 +2,10 @@ from datetime import datetime
 
 from loguru import logger
 from sqlalchemy.orm import Session
-from contas_a_pagar_e_receber.modulos.exceptions import NotFound
+from sqlalchemy import extract
 
+from contas_a_pagar_e_receber.modulos.exceptions import NotFound, MyException
+from contas_a_pagar_e_receber.config import QT_MAX_REGISTROS_MES
 from contas_a_pagar_e_receber.modelos_db.contas import ContaPagarReceber
 from contas_a_pagar_e_receber.modulos.fornecedor_cliente import get_fornecedor_cliente_por_id
 
@@ -11,6 +13,8 @@ from contas_a_pagar_e_receber.modulos.fornecedor_cliente import get_fornecedor_c
 def inserir_contas_a_pagar_e_receber(conta: dict, db: Session) -> dict:
     logger.info(f"[+] REQUISITOU INSERIR CONTAS - ENTRADA: {conta}")
     verificar_fornecedor_cliente(conta, db)
+    verifica_e_valida_quantidade_de_registros_por_mes_e_ano(db, conta['data_previsao'])
+    
     conta_pagar_e_receber = ContaPagarReceber(**conta)
     db.add(conta_pagar_e_receber)
     db.commit()
@@ -82,3 +86,13 @@ def verificar_fornecedor_cliente(conta: dict, db: Session):
 
     if id_fornecedor:
         get_fornecedor_cliente_por_id(id_fornecedor, db)
+
+def verifica_e_valida_quantidade_de_registros_por_mes_e_ano(db: Session, data: str):
+    mes, ano = data.month, data.year
+
+    qtd_registros = db.query(ContaPagarReceber). \
+                       filter(extract('month', ContaPagarReceber.data_previsao) == mes,
+                              extract('year', ContaPagarReceber.data_previsao) == ano).count()
+
+    if qtd_registros >= eval(QT_MAX_REGISTROS_MES):
+        raise MyException(mensagem=" Oops! Você atingiu o limite máximo para inserir contas neste mês!", status=203)

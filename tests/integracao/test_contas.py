@@ -1,5 +1,7 @@
 from tests.client_test import get_client_test
 from tests.db_mock import create_db_test
+from contas_a_pagar_e_receber.config import QT_MAX_REGISTROS_MES
+
 
 client_account = get_client_test()
 
@@ -23,6 +25,7 @@ def test_get_id_conta_a_pagar_e_receber_com_id_fornecedor_cliente_200():
         "descricao": "Academia",
         "valor": 110,
         "tipo": "PAGAR",
+        "data_previsao": '2023-09-06',
         "fornecedor_cliente_id": 1
     }
 
@@ -53,11 +56,30 @@ def test_contas_a_pagar_e_receber_422():
     json = {
         "descricao": "123456789" * 5,
         "valor": 0,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
     response = client_account.post('/api/inserir_contas', json=json)
     assert response.status_code == 422
+
+
+def test_insert_contas_a_pagar_e_receber_com_limite_de_registros():
+    create_db_test()
+
+    conta = {
+        "descricao": "Academia",
+        "valor": 110,
+        "tipo": "PAGAR",
+        "data_previsao": '2023-09-06'
+    }
+
+    for _ in range(eval(QT_MAX_REGISTROS_MES)):
+        client_account.post('/api/inserir_contas', json=conta)
+    
+
+    response = client_account.post('/api/inserir_contas', json=conta)
+    assert response.status_code == 203
 
 
 def test_insert_conta_a_pagar_e_receber_com_id_cliente_fornecedor_201():
@@ -70,6 +92,7 @@ def test_insert_conta_a_pagar_e_receber_com_id_cliente_fornecedor_201():
         "descricao": "Academia",
         "valor": 110,
         "tipo": "PAGAR",
+        "data_previsao": '2023-09-06',
         "fornecedor_cliente_id": 1
     }
 
@@ -100,6 +123,7 @@ def test_insert_conta_a_pagar_e_redeber_sem_id_cliente_fornecedor_201():
     conta = {
         "descricao": "Academia",
         "valor": 110,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
@@ -122,6 +146,7 @@ def test_insert_conta_a_pagar_e_receber_com_id_fornecedor_cliente_inexistente_er
         "descricao": "Academia",
         "valor": 110,
         "tipo": "PAGAR",
+        "data_previsao": '2023-09-06',
         "fornecedor_cliente_id": 1
     }
 
@@ -135,6 +160,7 @@ def test_baixar_contas_a_pagar_receber_201():
     conta_inserir = {
         "descricao": "Academia",
         "valor": 110,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
         }
 
@@ -151,6 +177,7 @@ def test_baixar_contas_a_pagar_e_receber_com_valor_alterado():
     conta_inserir = {
         "descricao": "Academia",
         "valor": 110,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
         }
 
@@ -160,6 +187,7 @@ def test_baixar_contas_a_pagar_e_receber_com_valor_alterado():
     conta_atualizar = {
         "descricao": "Academia",
         "valor": 200,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
@@ -180,6 +208,7 @@ def test_update_conta_a_pagar_e_receber():
     conta_inserir = {
         "descricao": "Academia",
         "valor": 110,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
@@ -190,6 +219,7 @@ def test_update_conta_a_pagar_e_receber():
     conta_atualizar = {
         "descricao": "Academia",
         "valor": 100,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
@@ -209,6 +239,7 @@ def test_update_conta_a_pagar_e_receber_fornecedor_cliente_id():
     conta_inserir = {
         "descricao": "Academia",
         "valor": 110,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
@@ -220,6 +251,7 @@ def test_update_conta_a_pagar_e_receber_fornecedor_cliente_id():
         "descricao": "Academia",
         "valor": 100,
         "tipo": "PAGAR",
+        "data_previsao": '2023-09-06',
         "fornecedor_cliente_id": 1
     }
 
@@ -237,6 +269,7 @@ def test_delete_conta_a_pagar_e_receber():
     conta_inserir = {
         "descricao": "Academia",
         "valor": 110,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
 
@@ -261,6 +294,7 @@ def test_atualizar_contas_a_pagar_e_receber_404():
     conta_atualizar = {
         "descricao": "Academia",
         "valor": 100,
+        "data_previsao": '2023-09-06',
         "tipo": "PAGAR"
     }
     response = client_account.put(

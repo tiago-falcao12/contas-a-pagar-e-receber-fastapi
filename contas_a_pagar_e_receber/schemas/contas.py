@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import List, Optional, Union
+from datetime import date
 
 from enum import Enum
 
@@ -15,6 +16,7 @@ class ContasBody(BaseModel):
     descricao: str = Field(min_length=5, max_length=50)
     valor: float = Field(gt=0)
     tipo: TipoEnum
+    data_previsao: date
 
 
 class ContasRequest(ContasBody):
@@ -30,7 +32,7 @@ class ContasResponse(ContasBody):
 
 
 class ContasReponseBaixa(ContasResponse):
-    data_baixa: Optional[datetime]
+    data_baixa: Optional[date]
     valor_baixa: Optional[float]
     baixado: Optional[bool]
 

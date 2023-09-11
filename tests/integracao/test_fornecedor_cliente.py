@@ -35,6 +35,7 @@ def test_capturar_contas_para_um_fornecedor_200():
         "descricao": "Academia",
         "valor": 100,
         "tipo": "PAGAR",
+        "data_previsao": '2023-09-06',
         "fornecedor_cliente_id": 1
     }
 
