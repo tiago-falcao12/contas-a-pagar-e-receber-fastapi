@@ -9,7 +9,7 @@ client = get_client_test()
 
 def test_hello_deve_retornar_200_e_mensagem():
 
-    response = client.get("/api/")
+    response = client.get("/")
     retorno_hello_wolrd = hello_world()
 
     assert response.status_code == 200

@@ -307,3 +307,29 @@ def test_remover_contas_a_pagar_e_receber_404():
 
     response = client_account.delete('/api/remover_contas/3')
     assert response.status_code == 404
+
+def test_total_previsao_contas_por_mes():
+    create_db_test()
+
+    conta_1 = {
+        "descricao": "Academia",
+        "valor": 100,
+        "data_previsao": '2023-09-06',
+        "tipo": "PAGAR"
+    }
+
+    conta_2 = {
+        "descricao": "mercado",
+        "valor": 900,
+        "data_previsao": '2023-09-06',
+        "tipo": "PAGAR"
+    }
+
+    client_account.post("/api/inserir_contas", json=conta_1)
+    client_account.post("/api/inserir_contas", json=conta_2)
+
+    response = client_account.get("/api/contas_total_mes", params={"ano": 2023})
+
+    assert response.status_code == 200
+    assert response.json()[0]['valor_total'] == 1000
+

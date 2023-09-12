@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 from datetime import date
 
 from enum import Enum
@@ -39,3 +39,8 @@ class ContasReponseBaixa(ContasResponse):
 
 class ListContasResponse(BaseModel):
     resultado: List[ContasResponse]
+
+
+class TotalValorAno(BaseModel):
+    mes: int
+    valor_total:float

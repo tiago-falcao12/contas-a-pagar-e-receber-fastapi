@@ -1,17 +1,19 @@
 from typing import List
+from datetime import date
 
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from fastapi import Depends, status
 
 
-from contas_a_pagar_e_receber.schemas.contas import ContasRequest, ContasReponseBaixa
+from contas_a_pagar_e_receber.schemas.contas import ContasRequest, ContasReponseBaixa, TotalValorAno
 from contas_a_pagar_e_receber.modulos.contas import (inserir_contas_a_pagar_e_receber,
                                                      capturar_contas_a_pagar_e_receber,
                                                      capturar_conta_a_pagar_e_receber,
                                                      atualizar_contas_a_receber_e_pagar,
                                                      remover_contas_a_pagar_e_receber,
-                                                     baixar_contas_a_pagar_e_receber)
+                                                     baixar_contas_a_pagar_e_receber,
+                                                     previsao_de_gastos_mesnsal)
 from contas_a_pagar_e_receber.servicos.database import get_db
 
 rota = APIRouter()
@@ -34,6 +36,10 @@ def listando_contas_a_pagar_e_receber(db: Session = Depends(get_db)):
 @rota.get("/contas/{identificador_conta}", response_model=ContasReponseBaixa, status_code=status.HTTP_200_OK)
 def capturando_conta_a_pagar_e_receber(identificador_conta: int, db: Session = Depends(get_db)):
     return capturar_conta_a_pagar_e_receber(identificador_conta, db)
+
+@rota.get("/contas_total_mes", response_model=List[TotalValorAno], status_code=status.HTTP_200_OK)
+def previsao_contas_a_pagar(ano: int = date.today().year, db: Session = Depends(get_db)):
+    return previsao_de_gastos_mesnsal(ano, db)
 
 
 @rota.put("/atualizar_contas/{identificador_conta}", response_model=ContasReponseBaixa, status_code=status.HTTP_200_OK)

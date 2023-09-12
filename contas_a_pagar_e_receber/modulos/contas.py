@@ -1,4 +1,6 @@
 from datetime import datetime
+from collections import defaultdict
+from operator import itemgetter
 
 from loguru import logger
 from sqlalchemy.orm import Session
@@ -7,6 +9,7 @@ from sqlalchemy import extract
 from contas_a_pagar_e_receber.modulos.exceptions import NotFound, MyException
 from contas_a_pagar_e_receber.config import QT_MAX_REGISTROS_MES
 from contas_a_pagar_e_receber.modelos_db.contas import ContaPagarReceber
+from contas_a_pagar_e_receber.schemas.contas import TipoEnum, TotalValorAno
 from contas_a_pagar_e_receber.modulos.fornecedor_cliente import get_fornecedor_cliente_por_id
 
 
@@ -36,6 +39,21 @@ def baixar_contas_a_pagar_e_receber(id: int, db: Session):
         db.commit()
         db.refresh(conta)       
     return conta
+
+
+def previsao_de_gastos_mesnsal(ano: str, db: Session):
+    contas = db.query(ContaPagarReceber).filter(extract('year', ContaPagarReceber.data_previsao) == ano). \
+                filter(ContaPagarReceber.tipo == TipoEnum.PAGAR).all()
+    
+    total_contas_ano = defaultdict(int)
+
+    for conta in contas:
+        total_contas_ano[conta.data_previsao.month] += conta.valor
+    
+    return sorted([TotalValorAno(mes=k, valor_total=v).dict() for k, v in total_contas_ano.items()],
+                  key=itemgetter('mes'),
+                  reverse=True)
+    
 
 
 def capturar_contas_a_pagar_e_receber(db: Session):

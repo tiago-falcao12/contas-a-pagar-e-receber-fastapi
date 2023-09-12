@@ -19,6 +19,6 @@ app = FastAPI(title="Contas a Pagar e Receber",
 app.add_exception_handler(NotFound, not_found_exception_handler)
 app.add_exception_handler(MyException, my_exception_exception_handler)
 
-app.include_router(hello.rota, prefix="/api", tags=["HELLO"])
+app.include_router(hello.rota, tags=["HELLO"])
 app.include_router(contas.rota, prefix="/api", tags=["CONTAS"])
 app.include_router(fornecedor_cliente.rota, prefix="/api", tags=["FORNECEDORES"])
